@@ -15,9 +15,9 @@ def generate_launch_description():
             '/launch.py']),
         launch_arguments={
             'backend': 'cflib',
-            'gui': 'false',
-            'teleop': 'false',
-            'mocap': 'false',
+            'gui': 'False',
+            'teleop': 'True',
+            'mocap': 'False',
             }.items())
 
     return LaunchDescription([
@@ -27,8 +27,8 @@ def generate_launch_description():
             executable='vel_mux.py',
             name='vel_mux',
             output='screen',
-            parameters=[{'hover_height': 0.3},
+            parameters=[{'hover_height': 1.0},
                         {'incoming_twist_topic': '/cmd_vel'},
-                        {'robot_prefix': '/cf231'}]
+                        {'robot_prefix': '/cf_1'}]
         ),
     ])

@@ -111,6 +111,11 @@ def generate_launch_description():
         'config',
         'teleop.yaml')
     
+    gz_bridge_yaml_path = os.path.join(
+        get_package_share_directory('crazyflie'),
+        'config',
+        'gz_bridge.yaml')
+    
     return LaunchDescription([
         DeclareLaunchArgument('crazyflies_yaml_file', 
                               default_value=default_crazyflies_yaml_path),
@@ -118,13 +123,14 @@ def generate_launch_description():
                               default_value=default_motion_capture_yaml_path),
         DeclareLaunchArgument('rviz_config_file', 
                               default_value=default_rviz_config_path),
-        DeclareLaunchArgument('backend', default_value='cpp'),
+        DeclareLaunchArgument('backend', default_value='cflib'),
         DeclareLaunchArgument('debug', default_value='False'),
         DeclareLaunchArgument('rviz', default_value='False'),
-        DeclareLaunchArgument('gui', default_value='True'),
+        DeclareLaunchArgument('gui', default_value='False'),
         DeclareLaunchArgument('teleop', default_value='True'),
         DeclareLaunchArgument('mocap', default_value='True'),
         DeclareLaunchArgument('teleop_yaml_file', default_value=''),
+        DeclareLaunchArgument('sim', default_value=True),
         OpaqueFunction(function=parse_yaml),
         Node(
             condition=LaunchConfigurationEquals('teleop', 'True'),
@@ -137,9 +143,9 @@ def generate_launch_description():
                 ('takeoff', 'all/takeoff'),
                 ('land', 'all/land'),
                 # uncomment to manually control (and update teleop.yaml)
-                # ('cmd_vel_legacy', 'cf6/cmd_vel_legacy'),
-                # ('cmd_full_state', 'cf6/cmd_full_state'),
-                # ('notify_setpoints_stop', 'cf6/notify_setpoints_stop'),
+                ('cmd_vel_legacy', 'cf_1/cmd_vel_legacy'),
+                ('cmd_full_state', 'cf_1/cmd_full_state'),
+                ('notify_setpoints_stop', 'cf_1/notify_setpoints_stop'),
             ],
             parameters= [PythonExpression(["'" + telop_yaml_path +"' if '", LaunchConfiguration('teleop_yaml_file'), "' == '' else '", LaunchConfiguration('teleop_yaml_file'), "'"])],
         ),
@@ -170,4 +176,16 @@ def generate_launch_description():
                 "use_sim_time": PythonExpression(["'", LaunchConfiguration('backend'), "' == 'sim'"]),
             }]
         ),
+        Node(
+            condition=LaunchConfigurationEquals('sim', 'True'),
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            output='screen',
+            parameters = [{'config_file': gz_bridge_yaml_path}]),
+        Node(
+            condition=LaunchConfigurationEquals('sim', 'False'),
+            package='crazyflie',
+            executable='aideck_streamer.py',
+            name='aideck_streamer'),
+
     ])

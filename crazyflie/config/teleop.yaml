@@ -1,39 +1,39 @@
 /teleop:
   ros__parameters:
     frequency: 100  # set to 0, to disable manual flight modes
-    mode: "none" # one of none, cmd_rpy, cmd_vel_world
+    mode: "high_level" # one of none, cmd_rpy, cmd_vel_world
     cmd_rpy:
       roll:
-        axis: 5
+        axis: 0
         max: 30.0 # deg
         deadband: 0.0
       pitch:
-        axis: 4
+        axis: 1
         max: 30.0 # deg
         deadband: 0.0
       yawrate:
-        axis: 1
+        axis: 2
         max: 200.0 # deg/s
         deadband: 5.0 # deg/s
       thrust:
-        axis: 2
+        axis: 3
         max: 60000.0 # PWM
         deadband: 0.0
     cmd_vel_world:
       x_velocity:
-        axis: 5
+        axis: 0
         max: 0.5 # m/s
         deadband: 0.1 # m/s
       y_velocity:
-        axis: 4
+        axis: 1
         max: 0.5 # m/s
         deadband: 0.1 # m/s
       z_velocity:
-        axis: 2
+        axis: 3
         max: 0.5 # m/s
         deadband: 0.1 # m/s
       yaw_velocity:
-        axis: 1
+        axis: 2
         max: 0.5 # rad/s
         deadband: 0.1 # rad/s
       # workspace limits
@@ -48,11 +48,13 @@
     takeoff:
       duration: 2.0
       height: 0.5
-      button: 7  # 7 start
+      button: 10  # R1
     land:
-      button: 6 # 6 back
+      button: 9 # L1
     emergency:
-      button: 1 # 1 red
+      button: 2 # square 
     arm:
-      button: 3 # yellow
+      button: 3 # triangle
+    control:
+      button: 1 # circle
 

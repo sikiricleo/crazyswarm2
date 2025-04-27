@@ -85,6 +85,9 @@ public:
         this->get_parameter<int>("arm.button", arm_button);
         is_armed_ = false;
 
+        this->declare_parameter<int>("control.button");
+        this->get_parameter<int>("control.button", control_button);
+
         on_mode_switched();
 
         dt_ = 1.0f/frequency_;
@@ -147,6 +150,7 @@ private:
     int land_button;
     int emergency_button;
     int arm_button;
+    int control_button;
 
     void on_parameter_event(const rcl_interfaces::msg::ParameterEvent &event)
     {
@@ -229,6 +233,9 @@ private:
         }
         if (checkButton(land_button)) {
             land();
+        }
+        if (checkButton(control_button)) {
+            change_mode();
         }
 
         lastButtonState = msg->buttons;
@@ -332,6 +339,30 @@ private:
         request2->height = 0.0;
         request2->duration = rclcpp::Duration::from_seconds(3.5);
         client_land_->async_send_request(request2);
+    }
+
+    void change_mode()
+    {
+        is_low_level_flight_active_ = !is_low_level_flight_active_;
+
+        if (is_low_level_flight_active_) {
+            mode_ = "cmd_vel_world";
+            on_mode_switched();
+            RCLCPP_INFO(get_logger(), "Manual control mode active");
+        } 
+        else {
+            if (!client_notify_setpoints_stop_->service_is_ready()) {
+                RCLCPP_ERROR(get_logger(), "NotifySetpointStop service not ready!");
+            } else {
+                auto request = std::make_shared<NotifySetpointsStop::Request>();
+                request->remain_valid_millisecs = 100;
+                request->group_mask = 0;
+                client_notify_setpoints_stop_->async_send_request(request);
+            }
+            mode_ = "high_level";
+            on_mode_switched();
+            RCLCPP_INFO(get_logger(), "High level control active");
+        }
     }
 
     void declareAxis(const std::string& name)
