@@ -10,32 +10,33 @@
         deadband: 0.0
       pitch:
         axis: 1
-        scale: -1.0
+        scale: 1.0
         max: 30.0 # deg
         deadband: 0.0
       yawrate:
         axis: 3
+        scale: 1.0
         max: 200.0 # deg/s
         deadband: 5.0 # deg/s
       thrust:
         axis: 4
-        scale: -1.0
+        scale: 1.0
         max: 60000.0 # PWM
         deadband: 0.0
     cmd_vel_world:
       x_velocity:
-        axis: 0
+        axis: 1
         scale: 1.0
         max: 0.5 # m/s
         deadband: 0.1 # m/s
       y_velocity:
-        axis: 1
-        scale: -1.0
+        axis: 0
+        scale: 1.0
         max: 0.5 # m/s
         deadband: 0.1 # m/s
       z_velocity:
         axis: 4
-        scale: -1.0
+        scale: 1.0
         max: 0.5 # m/s
         deadband: 0.1 # m/s
       yaw_velocity:
@@ -44,8 +45,8 @@
         max: 0.5 # rad/s
         deadband: 0.1 # rad/s
       # workspace limits
-      x_limit: [-1.0, 1.0] # m
-      y_limit: [-1.0, 1.0] # m
+      x_limit: [-2.0, 2.0] # m
+      y_limit: [-2.0, 2.0] # m
       z_limit: [0.0, 2.5] # m
     initial_position:
       x: 0.0

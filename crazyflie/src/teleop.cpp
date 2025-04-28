@@ -347,7 +347,7 @@ private:
         is_low_level_flight_active_ = !is_low_level_flight_active_;
 
         if (is_low_level_flight_active_) {
-            mode_ = "cmd_rpy";
+            mode_ = "cmd_vel_world";
             on_mode_switched();
         } 
         else {
