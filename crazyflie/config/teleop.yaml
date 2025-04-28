@@ -4,12 +4,12 @@
     mode: "high_level" # one of none, cmd_rpy, cmd_vel_world
     cmd_rpy:
       roll:
-        axis: 0
+        axis: 1
         scale: 1.0
         max: 30.0 # deg
         deadband: 0.0
       pitch:
-        axis: 1
+        axis: 2
         scale: 1.0
         max: 30.0 # deg
         deadband: 0.0
@@ -25,12 +25,12 @@
         deadband: 0.0
     cmd_vel_world:
       x_velocity:
-        axis: 1
+        axis: 2
         scale: 1.0
         max: 0.5 # m/s
         deadband: 0.1 # m/s
       y_velocity:
-        axis: 0
+        axis: 1
         scale: 1.0
         max: 0.5 # m/s
         deadband: 0.1 # m/s
@@ -55,7 +55,7 @@
     auto_yaw_rate: 0.0 # rad/s, use 0.0 for manual yaw control
     takeoff:
       duration: 2.0
-      height: 0.5
+      height: 1.0
       button: 10  # R1
     land:
       button: 9 # L1
