@@ -120,6 +120,7 @@ private:
     struct Axis
     { 
         int axis;
+        float scale;
         float max;
         float deadband;
     };
@@ -257,15 +258,15 @@ private:
             return 0;
         }
 
-        sensor_msgs::msg::Joy::_axes_type::value_type sign = 1.0;
-        if (a.axis < 0) {
-            sign = -1.0;
-            a.axis = -a.axis;
-        }
+        //sensor_msgs::msg::Joy::_axes_type::value_type sign = 1.0;
+        // if (a.axis < 0) {
+        //     sign = -1.0;
+        //     a.axis = -a.axis;
+        // }
         if ((size_t) a.axis > msg->axes.size()) {
             return 0;
         }
-        auto result = sign * msg->axes[a.axis - 1]*a.max;
+        auto result = a.scale * msg->axes[a.axis - 1]*a.max;
         if (fabs(result) > a.deadband) {
             return result;
         } else {
@@ -309,7 +310,7 @@ private:
 
         timer_takeoff_ = this->create_wall_timer(std::chrono::duration<float>(takeoff_paras_.duration), [this]() {
             state_.z = takeoff_paras_.height;  
-            is_low_level_flight_active_ = true;
+            //is_low_level_flight_active_ = true;
             this->timer_takeoff_->cancel();
         });
     }
@@ -321,7 +322,7 @@ private:
             return;
         }
 
-        is_low_level_flight_active_ = false;
+        //is_low_level_flight_active_ = false;
 
         // If we are in manual flight mode, first switch back to high-level mode
         if (!client_notify_setpoints_stop_->service_is_ready()) {
@@ -346,9 +347,8 @@ private:
         is_low_level_flight_active_ = !is_low_level_flight_active_;
 
         if (is_low_level_flight_active_) {
-            mode_ = "cmd_vel_world";
+            mode_ = "cmd_rpy";
             on_mode_switched();
-            RCLCPP_INFO(get_logger(), "Manual control mode active");
         } 
         else {
             if (!client_notify_setpoints_stop_->service_is_ready()) {
@@ -361,13 +361,13 @@ private:
             }
             mode_ = "high_level";
             on_mode_switched();
-            RCLCPP_INFO(get_logger(), "High level control active");
         }
     }
 
     void declareAxis(const std::string& name)
     {
         this->declare_parameter<int>(name + ".axis");
+        this->declare_parameter<float>(name + ".scale");
         this->declare_parameter<float>(name + ".max");
         this->declare_parameter<float>(name + ".deadband");
     }
@@ -375,6 +375,7 @@ private:
     void getAxis(const std::string& name, Axis& axis)
     {
         this->get_parameter<int>(name + ".axis", axis.axis);
+        this->get_parameter<float>(name + ".scale", axis.scale);
         this->get_parameter<float>(name + ".max", axis.max);
         this->get_parameter<float>(name + ".deadband", axis.deadband);
     }

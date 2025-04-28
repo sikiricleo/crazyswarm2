@@ -130,7 +130,7 @@ def generate_launch_description():
         DeclareLaunchArgument('teleop', default_value='True'),
         DeclareLaunchArgument('mocap', default_value='True'),
         DeclareLaunchArgument('teleop_yaml_file', default_value=''),
-        DeclareLaunchArgument('sim', default_value=True),
+        DeclareLaunchArgument('sim', default_value='True'),
         OpaqueFunction(function=parse_yaml),
         Node(
             condition=LaunchConfigurationEquals('teleop', 'True'),
