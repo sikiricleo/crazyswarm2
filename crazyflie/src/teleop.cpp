@@ -322,7 +322,9 @@ private:
             return;
         }
 
-        //is_low_level_flight_active_ = false;
+        is_low_level_flight_active_ = false;
+        mode_ = "high_level";
+        on_mode_switched();
 
         // If we are in manual flight mode, first switch back to high-level mode
         if (!client_notify_setpoints_stop_->service_is_ready()) {
