@@ -352,7 +352,15 @@ private:
         } 
         else {
             mode_ = "high_level";
-            land();
+            if (!client_notify_setpoints_stop_->service_is_ready()) {
+                RCLCPP_ERROR(get_logger(), "NotifySetpointStop service not ready!");
+            } else {
+                auto request1 = std::make_shared<NotifySetpointsStop::Request>();
+                request1->remain_valid_millisecs = 100;
+                request1->group_mask = 0;
+                client_notify_setpoints_stop_->async_send_request(request1);
+            }
+            takeoff();
             on_mode_switched();
         }
     }
